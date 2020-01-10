@@ -5,6 +5,7 @@ import coloredlogs
 import tensorflow as tf
 from models import DPG
 from datasources import HDF5Source
+from tensorflow.python.client import device_lib
 
 if __name__ == '__main__':
 
@@ -19,6 +20,17 @@ if __name__ == '__main__':
         fmt='%(asctime)s %(levelname)s %(message)s',
         level=args.v.upper(),
     )
+
+    # Check if GPU is available
+    session_config = tf.ConfigProto(
+        gpu_options=tf.GPUOptions(allow_growth=True))
+    gpu_available = False
+    try:
+        gpus = [d for d in device_lib.list_local_devices(config=session_config)
+                if d.device_type == 'GPU']
+        gpu_available = len(gpus) > 0
+    except:
+        pass
 
     for i in range(0, 1):
         # Specify which people to train on, and which to test on
@@ -51,7 +63,7 @@ if __name__ == '__main__':
                 train_data={
                     'mpi': HDF5Source(
                         session,
-                        data_format='NCHW',
+                        data_format='NCHW' if gpu_available else 'NHWC',
                         batch_size=batch_size,
                         keys_to_use=['train'],
                         hdf_path='../datasets/world_cropped_contrast.hdf5',
@@ -65,7 +77,7 @@ if __name__ == '__main__':
                 test_data={
                     'mpi': HDF5Source(
                         session,
-                        data_format='NCHW',
+                        data_format='NCHW' if gpu_available else 'NHWC',
                         batch_size=batch_size,
                         keys_to_use=['test'],
                         hdf_path='../datasets/world_cropped_contrast.hdf5',
