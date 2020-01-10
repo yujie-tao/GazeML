@@ -45,7 +45,7 @@ if __name__ == '__main__':
                         'learning_rate': 0.0002,
                     },
                 ],
-                extra_tags=[person_id],
+                extra_tags=[],
 
                 # Data sources for training (and testing).
                 train_data={
@@ -53,7 +53,7 @@ if __name__ == '__main__':
                         session,
                         data_format='NCHW',
                         batch_size=batch_size,
-                        keys_to_use=['data/train'],
+                        keys_to_use=['train'],
                         hdf_path='../datasets/world_cropped_contrast.hdf5',
                         eye_image_shape=(436, 504),
                         testing=False,
@@ -67,8 +67,8 @@ if __name__ == '__main__':
                         session,
                         data_format='NCHW',
                         batch_size=batch_size,
-                        keys_to_use=['test/train'],
-                        hdf_path='../world_cropped_contrast.hdf5',
+                        keys_to_use=['test'],
+                        hdf_path='../datasets/world_cropped_contrast.hdf5',
                         eye_image_shape=(436, 504),
                         testing=True,
                     ),
